@@ -16,6 +16,8 @@ assertj = "3.24.2"
 test_containers = "1.19.3"
 fixture_monkey = "1.0.13"
 
+springdoc = "2.5.0"
+
 [plugins]
 kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin_kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
@@ -37,6 +39,8 @@ spring_boot_starter_data_jpa = { module = "org.springframework.boot:spring-boot-
 spring_boot_starter_actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
 spring_boot_configuration_processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring_boot_starter_test = { module = "org.springframework.boot:spring-boot-starter-test" }
+springdoc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+
 
 spring_boot_testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 test_containers_junit_jupiter = { module = "org.testcontainers:junit-jupiter" }
