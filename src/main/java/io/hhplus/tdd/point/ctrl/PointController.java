@@ -1,5 +1,7 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.ctrl;
 
+import io.hhplus.tdd.point.PointHistory;
+import io.hhplus.tdd.point.UserPoint;
 import io.hhplus.tdd.point.svc.PointService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
