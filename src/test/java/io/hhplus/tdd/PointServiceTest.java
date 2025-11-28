@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -96,6 +97,47 @@ public class PointServiceTest {
         // then
         assertThat(result).isEmpty();
         then(pointRepository).should().getHistories(id);
+    }
+
+    @Test
+    @DisplayName("유저가 포인트를 충전하면 누적된 포인트를 반환한다")
+    void chargePoint_whenValidAmount_thenIncreasePoint() {
+        long userId = 1L;
+
+        // 충전할 포인트
+        long amount = 100L;
+
+        // 충전 전 기본 포인트 / 충전 후 기대 포인트
+        UserPoint current = new UserPoint(userId, 200L, System.currentTimeMillis());
+        UserPoint expected = new UserPoint(userId, 300L, System.currentTimeMillis());
+
+        // 현재 포인트 조회
+        given(pointRepository.getUserPoint(userId))
+                .willReturn(current);
+
+        log.info(" (1) 유저의 현재 포인트: {}", current);
+
+        // 충전 내역 저장
+        PointHistory savedHistory = new PointHistory(
+                1L, userId, amount, TransactionType.CHARGE, System.currentTimeMillis()
+        );
+        given(pointRepository.saveHistory(any()))
+                .willReturn(savedHistory);
+
+        // 충전 후 사용자 포인트 저장
+        given(pointRepository.saveUserPoint(any()))
+                .willReturn(expected);
+
+        log.info(" (2) 유저의 충천 후 포인트: {}", expected);
+
+        // when
+        UserPoint result = pointService.saveCharge(userId, amount);
+
+        // then
+        assertThat(result.point()).isEqualTo(300L);
+        then(pointRepository).should().getUserPoint(userId);
+        then(pointRepository).should().saveHistory(any());
+        then(pointRepository).should().saveUserPoint(any());
     }
 
 }

@@ -13,4 +13,14 @@ public interface PointRepository {
     UserPoint getUserPoint(long userId);
 
     List<PointHistory> getHistories(long userId);
+
+    UserPoint saveUserPoint(UserPoint userPoint);
+
+    PointHistory saveHistory(PointHistory history);
+
+    UserPoint updateUserPoint(UserPoint userPoint);
+
+    UserPoint deleteUserPoint(UserPoint userPoint);
+
+
 }

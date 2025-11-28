@@ -12,4 +12,10 @@ public interface PointService {
 
     // 2) 유저의 포인트 내역 조회
     List<PointHistory> getHistories(long userId);
+
+    // 3) 포인트 충전
+    UserPoint saveCharge(long userId, long amount);
+
+    // 4) 포인트 사용
+    UserPoint usePoint(long userId, long amount);
 }
