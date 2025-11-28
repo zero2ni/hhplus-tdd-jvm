@@ -1,5 +1,7 @@
 package io.hhplus.tdd;
 
+import io.hhplus.tdd.point.PointHistory;
+import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
 import io.hhplus.tdd.point.repository.PointRepository;
 import io.hhplus.tdd.point.svc.PointService;
@@ -11,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 @SpringBootTest
 public class PointServiceTest {
@@ -47,6 +52,50 @@ public class PointServiceTest {
 
         // 일부러 틀린 기대값 넣어보기 (RED)
          assertThat(result.point()).isEqualTo(999L);
+    }
+
+    /*
+    * 내역조회
+    * (1) 성공적인 조회
+    * (2) 히스토리가 없는 경우 → 빈 리스트 반환
+    * */
+    // (1) happy case
+    @Test
+    @DisplayName("유저의 포인트 사용/충전 내역을 조회한다")
+    void getHistories_whenUserExists_thenReturnHistoryList() {
+        // given
+        long id = 1L;
+
+        PointHistory h1 = new PointHistory(1L, id, 100L, TransactionType.CHARGE, System.currentTimeMillis());
+        PointHistory h2 = new PointHistory(2L, id, -50L, TransactionType.USE, System.currentTimeMillis());
+
+        given(pointRepository.getHistories(id))
+                .willReturn(List.of(h1, h2));
+
+        // when
+        List<PointHistory> result = pointService.getHistories(id);
+
+        // then
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).userId()).isEqualTo(id);
+    }
+
+    // 히스토리가 없는 경우 → 빈 리스트 반환
+    // Repository가 정확히 한 번, 올바른 파라미터로 호출됐는지 검증
+    @Test
+    @DisplayName("거래 내역이 없는 유저를 조회하면 빈 리스트를 반환한다")
+    void getHistories_whenUserHasNoHistory_thenReturnEmptyList() {
+        // given
+        long id = 2L;
+        given(pointRepository.getHistories(id))
+                .willReturn(List.of());
+
+        // when
+        List<PointHistory> result = pointService.getHistories(id);
+
+        // then
+        assertThat(result).isEmpty();
+        then(pointRepository).should().getHistories(id);
     }
 
 }
