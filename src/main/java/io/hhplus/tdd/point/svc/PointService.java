@@ -14,7 +14,7 @@ public interface PointService {
     List<PointHistory> getHistories(long userId);
 
     // 3) 포인트 충전
-    UserPoint saveCharge(long userId, long amount);
+    UserPoint chargePoint(long userId, long amount);
 
     // 4) 포인트 사용
     UserPoint usePoint(long userId, long amount);
