@@ -131,7 +131,7 @@ public class PointServiceTest {
         log.info(" (2) 유저의 충천 후 포인트: {}", expected);
 
         // when
-        UserPoint result = pointService.saveCharge(userId, amount);
+        UserPoint result = pointService.chargePoint(userId, amount);
 
         // then
         assertThat(result.point()).isEqualTo(300L);

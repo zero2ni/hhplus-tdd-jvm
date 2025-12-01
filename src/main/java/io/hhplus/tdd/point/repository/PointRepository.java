@@ -12,10 +12,13 @@ public interface PointRepository {
     // 유저 포인트 조회
     UserPoint getUserPoint(long userId);
 
+    // 히스토리 조회
     List<PointHistory> getHistories(long userId);
 
+    // 유저 포인트 저장
     UserPoint saveUserPoint(UserPoint userPoint);
 
+    // 히스토리 저장
     PointHistory saveHistory(PointHistory history);
 
     UserPoint updateUserPoint(UserPoint userPoint);
