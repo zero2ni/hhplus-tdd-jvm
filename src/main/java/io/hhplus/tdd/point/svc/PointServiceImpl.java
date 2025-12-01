@@ -33,7 +33,10 @@ public class PointServiceImpl implements PointService {
     * 포인트 조회 후 저장
     * */
     @Override
-    public UserPoint saveCharge(long userId, long amount) {
+    public UserPoint chargePoint(long userId, long amount) {
+
+        // 공통 시간 한 번만 확인하기
+        long now = System.currentTimeMillis();
 
         // 1. 현재 포인트 조회 (없으면 0포인트로 시작)
         UserPoint current = pointRepository.getUserPoint(userId);
@@ -42,28 +45,15 @@ public class PointServiceImpl implements PointService {
         }
 
         // 2. 충전 후 포인트 계산
-        long newPoint = current.point() + amount;
-        UserPoint updated = new UserPoint(
-                userId,
-                newPoint,
-                System.currentTimeMillis()
-        );
+        UserPoint updatePoint = current.charge(amount, now);
 
         // 3. 충전 히스토리 저장
-        PointHistory history = new PointHistory(
-                0L,                                     // id는 DB에서 채운다고 보고 0으로 둬도 됨
-                userId,
-                amount,
-                TransactionType.CHARGE,
-                System.currentTimeMillis()
-        );
-        pointRepository.saveHistory(history);
+        pointRepository.saveHistory(new PointHistory(
+                0L, userId, amount, TransactionType.CHARGE, now
+        ));
 
         // 4. 변경된 포인트 저장
-        UserPoint saved = pointRepository.saveUserPoint(updated);
-
-        // 5. 결과 반환
-        return saved;
+        return pointRepository.saveUserPoint(updatePoint);
     }
 
     @Override

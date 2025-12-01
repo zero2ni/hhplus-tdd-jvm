@@ -52,7 +52,7 @@ public class PointController {
             @PathVariable long id,
             @RequestBody long amount
     ) {
-        return pointService.saveCharge(id, amount);
+        return pointService.chargePoint(id, amount);
     }
 
     /**
