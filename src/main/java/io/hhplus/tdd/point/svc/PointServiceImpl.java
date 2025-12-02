@@ -58,7 +58,31 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public UserPoint usePoint(long userId, long amount) {
-        return null;
+
+        long now = System.currentTimeMillis();
+
+        // 1. 현재 포인트 조회 (없으면 0포인트)
+        UserPoint current = pointRepository.getUserPoint(userId);
+        if (current == null) {
+            current = UserPoint.empty(userId);
+        }
+
+        // 2. 도메인 로직 위임 (잔고 체크 포함)
+        UserPoint updated = current.use(amount, now);
+
+        // 3. 사용 히스토리 저장 (amount는 음수!)
+        pointRepository.saveHistory(
+                new PointHistory(
+                        0L,
+                        userId,
+                        -amount,
+                        TransactionType.USE,
+                        now
+                )
+        );
+
+        // 4. 변경된 포인트 저장
+        return pointRepository.updateUserPoint(updated);
     }
 
 

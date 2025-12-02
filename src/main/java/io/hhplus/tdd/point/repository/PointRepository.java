@@ -21,6 +21,7 @@ public interface PointRepository {
     // 히스토리 저장
     PointHistory saveHistory(PointHistory history);
 
+    // 유저 포인트 사용
     UserPoint updateUserPoint(UserPoint userPoint);
 
     UserPoint deleteUserPoint(UserPoint userPoint);
